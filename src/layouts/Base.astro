@@ -1,0 +1,222 @@
+---
+import '../styles/global.css';
+import { site, nav } from '../data/site';
+
+interface Props {
+  title?: string;
+  description?: string;
+  theme?: 'light' | 'dark';
+}
+
+const {
+  title,
+  description = `${site.name}: marketing & communications, business analysis and project coordination, plus paintings and sketches.`,
+  theme = 'light',
+} = Astro.props;
+
+const pageTitle = title ? `${title} · ${site.name}` : site.name;
+const path = Astro.url.pathname;
+const isActive = (href: string) =>
+  href === '/' ? path === '/' : path.startsWith(href.replace(/\/$/, ''));
+---
+
+<!doctype html>
+<html lang="en" data-theme={theme}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(site.shareImage, Astro.site ?? Astro.url).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="theme-color" content={theme === 'dark' ? '#1A0E11' : '#F5F1E8'} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Instrument+Serif:ital@0;1&display=swap"
+    />
+    <script is:inline>
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('motion');
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+
+    <header class="nav wrap">
+      <a class="mark wide" href="/" aria-label="Home">S.C.</a>
+      <nav aria-label="Main" class="nav__links">
+        {nav.map((n) => (
+          <a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a>
+        ))}
+      </nav>
+      <button class="pill-btn nav__menu" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+    </header>
+
+    <div class="menu wrap" id="menu" hidden>
+      <div class="menu__top">
+        <span class="mark wide">S.C.</span>
+        <button class="pill-btn menu__close" type="button">Close</button>
+      </div>
+      <nav aria-label="Mobile" class="menu__links">
+        {nav.map((n) => (
+          <a href={n.href} aria-current={isActive(n.href) ? 'page' : undefined}>{n.label}</a>
+        ))}
+      </nav>
+    </div>
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <footer class="footer wrap">
+      <div class="footer__left">
+        {site.signature
+          ? <img class="footer__sig" src={site.signature} alt="" />
+          : <div class="footer__sig footer__sig--ph">signature</div>}
+        <a class="footer__email serif" href={`mailto:${site.email}`}>{site.email}</a>
+      </div>
+      <a class="footer__li" href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
+    </footer>
+
+    <script>
+      // Mobile menu
+      const menu = document.getElementById('menu')!;
+      const openBtn = document.querySelector<HTMLButtonElement>('.nav__menu')!;
+      const closeBtn = document.querySelector<HTMLButtonElement>('.menu__close')!;
+      const setMenu = (open: boolean) => {
+        menu.hidden = !open;
+        openBtn.setAttribute('aria-expanded', String(open));
+        document.body.style.overflow = open ? 'hidden' : '';
+        (open ? closeBtn : openBtn).focus();
+      };
+      openBtn.addEventListener('click', () => setMenu(true));
+      closeBtn.addEventListener('click', () => setMenu(false));
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !menu.hidden) setMenu(false);
+      });
+
+      const motion = document.documentElement.classList.contains('motion');
+
+      // Scroll reveals (fade/slide/scale/zoom in once)
+      if (motion) {
+        const io = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((en) => {
+              if (en.isIntersecting) {
+                en.target.classList.add('is-in');
+                io.unobserve(en.target);
+              }
+            }),
+          { threshold: 0.12 },
+        );
+        document.querySelectorAll('[data-reveal]').forEach((el) => io.observe(el));
+      }
+
+      // Count-up numbers (Experience stats). Final value is already in the HTML.
+      if (motion) {
+        const countUp = (el: HTMLElement) => {
+          const to = +el.dataset.to!, dec = +(el.dataset.dec || 0);
+          const pre = el.dataset.pre || '', suf = el.dataset.suf || '';
+          const t0 = performance.now(), dur = 1600;
+          const tick = (t: number) => {
+            const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 3);
+            el.textContent = pre + (to * e).toFixed(dec) + suf;
+            if (p < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+        };
+        const cio = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((en) => {
+              if (en.isIntersecting) {
+                countUp(en.target as HTMLElement);
+                cio.unobserve(en.target);
+              }
+            }),
+          { threshold: 0.5 },
+        );
+        document.querySelectorAll('[data-to]').forEach((el) => cio.observe(el));
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .nav {
+    position: sticky; top: 0; z-index: 20;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    padding-top: 20px; padding-bottom: 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .mark {
+    color: var(--fg);
+    font-size: 17px; letter-spacing: .02em;
+  }
+  .mark:hover { color: var(--fg); }
+  .nav__links { display: flex; gap: 36px; }
+  .nav__links a {
+    padding: 4px 0;
+    font-size: 15px; font-weight: 500; color: var(--fg);
+    text-underline-offset: 6px; text-decoration-thickness: 1.5px;
+    transition: color .2s;
+  }
+  .nav__links a:hover { color: var(--sage); }
+  .nav__links a[aria-current='page'] { color: var(--accent); text-decoration: underline; }
+  .nav__menu { display: none; }
+
+  .menu {
+    position: fixed; inset: 0; z-index: 40;
+    display: flex; flex-direction: column;
+    padding-top: 20px; padding-bottom: 20px;
+    background: var(--bg); color: var(--fg);
+    animation: scFade .35s ease both;
+  }
+  .menu[hidden] { display: none; }
+  .menu__top { display: flex; justify-content: space-between; align-items: center; }
+  .menu__links { display: flex; flex-direction: column; gap: 8px; margin-top: 56px; }
+  .menu__links a {
+    padding: 6px 0;
+    font-family: var(--serif); font-size: 52px; line-height: 1.05; color: var(--fg);
+  }
+  .menu__links a[aria-current='page'] { color: var(--accent); }
+
+  @media (max-width: 759px) {
+    .nav__links { display: none; }
+    .nav__menu { display: inline-block; }
+  }
+
+  .footer {
+    margin-top: var(--sec-gap);
+    padding-top: 36px; padding-bottom: 44px;
+    border-top: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 20px 40px;
+    justify-content: space-between; align-items: center;
+  }
+  .footer__left { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .footer__sig { width: 120px; height: 44px; object-fit: contain; object-position: left; }
+  .footer__sig--ph {
+    border-bottom: 1px solid var(--fg);
+    display: flex; align-items: center; justify-content: center;
+    font-family: ui-monospace, Menlo, monospace; font-size: 10px; color: var(--sub);
+  }
+  .footer__email {
+    font-size: 34px; color: var(--fg); overflow-wrap: anywhere;
+    transition: color .25s;
+  }
+  .footer__email:hover, .footer__li:hover { color: var(--sage); }
+  .footer__li {
+    font-size: 15px; font-weight: 500; color: var(--fg);
+    border-bottom: 1px solid var(--fg); padding-bottom: 2px;
+    transition: color .25s;
+  }
+  @media (max-width: 759px) {
+    .footer__email { font-size: 24px; }
+  }
+</style>

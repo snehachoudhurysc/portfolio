@@ -1,0 +1,241 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { stats, timeline, leadership, certs } from '../data/experience';
+import { work } from '../data/work';
+
+const fmt = (s: (typeof stats)[number]) => s.pre + s.to.toFixed(s.dec) + s.suf;
+---
+
+<Base title="Experience">
+  <div class="wrap page">
+    <p class="eyebrow">Experience</p>
+    <h1 class="sec-title">Marketing, operations, and <em class="wine">results</em> I can point to.</h1>
+
+    <section class="stats" aria-label="Key achievements">
+      {stats.map((s) => (
+        <div class="stat">
+          <span class="stat__num wide" data-to={s.to} data-dec={s.dec} data-pre={s.pre} data-suf={s.suf}>{fmt(s)}</span>
+          <span class="stat__label serif">{s.label}</span>
+          <span class="stat__where">{s.where}</span>
+        </div>
+      ))}
+    </section>
+
+    <section class="block">
+      <h2 class="sub-title">Timeline</h2>
+      <ol class="timeline">
+        {timeline.map((r, i) => (
+          <li class:list={['row', { 'row--current': i === 0 }]} data-reveal="up">
+            <div class="row__when">
+              <span class="row__dot"></span>
+              <span class="row__years">{r.years}</span>
+              {i === 0 && <span class="row__badge">Current</span>}
+            </div>
+            <div>
+              <h3 class="row__company serif">{r.company}</h3>
+              <p class="row__role">{r.role} <span>· {r.place}</span></p>
+              <p class="row__summary">{r.summary}</p>
+              <ul class="row__list">{r.highlights.map((h) => <li>{h}</li>)}</ul>
+              {r.more && (
+                <details class="row__more">
+                  <summary>More details</summary>
+                  <ul class="row__list">{r.more.map((h) => <li>{h}</li>)}</ul>
+                </details>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="block">
+      <h2 class="sub-title">Selected work</h2>
+      <div class="work">
+        {work.map((c) => (
+          <a class="work__item" href={`/work/${c.slug}/`} data-reveal="up">
+            <span class="work__media">
+              {c.image
+                ? <img src={c.image} alt="" />
+                : <span class="ph work__ph">{c.placeholder}</span>}
+            </span>
+            <span class="work__kind">{c.kind}</span>
+            <span class="work__title serif">{c.title}</span>
+            <span class="work__blurb">{c.blurb}</span>
+            <span class="work__cta">Read case study →</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="sub-title">Credentials</h2>
+      <div class="creds">
+        <div>
+          <h3 class="creds__h">Education</h3>
+          <ul class="list">
+            <li>
+              <span class="entry__top"><strong>Bachelor of Business Administration (BBA)</strong><span class="entry__date">Sep 2021 – Dec 2025</span></span>
+              <span class="entry__org">University of New Brunswick · Marketing and International Business · Dean's List Recipient</span>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="creds__h">Leadership &amp; activities</h3>
+          <ul class="list">
+            {leadership.map((l) => (
+              <li>
+                <span class="entry__top"><strong>{l.title}</strong><span class="entry__date">{l.date}</span></span>
+                <span class="entry__org">{l.org}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h3 class="creds__h">Certifications</h3>
+          <ul class="list">
+            {certs.map((c) => (
+              <li>
+                <span class="entry__top"><strong>{c.title}</strong>{c.date && <span class="entry__date">{c.date}</span>}</span>
+                <span class="entry__org">{c.org}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="cv"><a class="btn" href={site.cv} download>Download CV ↓</a></div>
+  </div>
+</Base>
+
+<style>
+  .page { padding-top: var(--sec-top); }
+  .sec-title { max-width: 900px; }
+
+  .block { margin-top: var(--sec-gap); }
+
+  /* Stats: the only place the big numbers appear */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 var(--gap);
+    margin-top: var(--gap-l);
+  }
+  .stat {
+    container-type: inline-size;
+    display: flex; flex-direction: column; gap: 12px;
+    padding-top: 28px;
+    border-top: 1px solid var(--ink);
+  }
+  .stat__num {
+    font-size: min(120px, calc(100cqi / 4.4));
+    line-height: .9; letter-spacing: -.03em;
+    color: var(--wine);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .stat__label { font-size: 24px; line-height: 1.15; text-wrap: pretty; }
+  .stat__where { font-size: 13px; color: var(--muted); }
+
+  /* Timeline */
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .row {
+    display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 40px;
+    padding: 30px 0;
+    border-top: 1px solid var(--line);
+  }
+  .row__when {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    align-self: start; padding-top: 8px;
+  }
+  .row__dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sage); flex: none; }
+  .row--current .row__dot { background: var(--wine); }
+  .row__years { font-size: 14px; font-weight: 500; letter-spacing: .02em; }
+  .row__badge {
+    padding: 4px 10px; border-radius: 999px;
+    background: var(--wine); color: var(--cream);
+    font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  }
+  .row__company { margin: 0; font-size: 40px; line-height: 1.05; }
+  .row--current .row__company { color: var(--wine); }
+  .row__role { margin: 8px 0 0; font-size: 15px; font-weight: 500; }
+  .row__role span { color: var(--muted); font-weight: 400; }
+  .row__summary {
+    margin: 14px 0 0;
+    font-size: var(--fs-body); line-height: 1.6; max-width: 680px;
+    text-wrap: pretty;
+  }
+  .row__list { margin: 10px 0 0; padding: 0; list-style: none; max-width: 680px; }
+  .row__list li {
+    position: relative;
+    padding-left: 22px; margin-top: 6px;
+    font-size: var(--fs-body); line-height: 1.6; color: var(--body2);
+    text-wrap: pretty;
+  }
+  .row__list li::before {
+    content: ''; position: absolute; left: 2px; top: .8em;
+    width: 8px; height: 1.5px; background: var(--wine);
+  }
+  .row__more { margin-top: 6px; max-width: 680px; }
+  .row__more summary {
+    display: inline-flex; align-items: center; gap: 8px;
+    min-height: 44px;
+    font-size: 15px; font-weight: 500; color: var(--wine);
+    cursor: pointer; list-style: none;
+  }
+  .row__more summary::-webkit-details-marker { display: none; }
+  .row__more summary::after { content: '+'; font-size: 18px; transition: transform .25s; }
+  .row__more[open] summary::after { transform: rotate(45deg); }
+  .row__more summary:hover { color: var(--ink); }
+  .row__more .row__list { margin-top: 0; }
+
+  /* Selected work: one compact row */
+  .work { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
+  .work__item { display: flex; flex-direction: column; color: var(--ink); }
+  .work__media { display: block; aspect-ratio: 4 / 3; overflow: hidden; border-radius: 6px; margin-bottom: 18px; }
+  .work__media img, .work__ph {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .8s var(--ease);
+  }
+  .work__item:hover .work__media img, .work__item:hover .work__ph { transform: scale(1.03); }
+  .work__kind {
+    font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); font-weight: 700;
+  }
+  .work__title { margin-top: 6px; font-size: 32px; line-height: 1.05; }
+  .work__blurb { margin-top: 10px; font-size: 15px; line-height: 1.5; color: var(--body2); }
+  .work__cta { margin-top: 14px; font-size: 15px; font-weight: 500; color: var(--wine); }
+  .work__item:hover .work__title { color: var(--wine); }
+
+  /* Credentials: one compact block */
+  .creds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--gap); }
+  .creds__h {
+    margin: 0; padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink);
+    font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700;
+    color: var(--wine);
+  }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li {
+    display: flex; flex-direction: column; gap: 3px;
+    padding: 12px 0; border-bottom: 1px solid rgba(30, 30, 30, .1);
+    font-size: 15px; line-height: 1.45;
+  }
+  .entry__top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .entry__top strong { font-weight: 500; }
+  .entry__date { flex: none; font-size: 13px; color: var(--muted); white-space: nowrap; }
+  .entry__org { font-size: 14px; color: var(--body2); }
+
+  .cv { margin-top: var(--gap-l); }
+
+  @media (max-width: 759px) {
+    .stats { grid-template-columns: 1fr; }
+    .stat__num { font-size: 64px; }
+    .stat { padding-bottom: 28px; }
+    .stat__label { font-size: 19px; }
+    .row { grid-template-columns: 1fr; gap: 12px; }
+    .row__company { font-size: 30px; }
+    .work { grid-template-columns: 1fr; gap: var(--gap-l); }
+    .creds { grid-template-columns: 1fr; gap: var(--gap-l); }
+  }
+</style>

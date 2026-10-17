@@ -1,0 +1,111 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../data/site';
+import { artworks } from '../data/art';
+
+const teaser = artworks.find((a) => a.image);
+---
+
+<Base>
+  <section class="home wrap">
+    <div class="name-box">
+      <h1 class="name wide">
+        <span class="name__mask"><span class="name__line">Sneha<span class="wine">.</span></span></span>
+        <span class="name__mask"><span class="name__line name__line--2">Choudhury</span></span>
+      </h1>
+    </div>
+
+    <div class="lower">
+      <p class="intro serif">{site.intro}</p>
+      <div class="cta">
+        <p class="now"><span class="now__dot"></span><span>Currently <em>{site.currently}</em></span></p>
+        <div class="cta__btns">
+          <a class="btn" href="/experience/">See my work →</a>
+          <a class="text-link" href="/art/">See my art →</a>
+        </div>
+      </div>
+      <a class="teaser" href="/art/">
+        {teaser
+          ? <img class="teaser__img" src={teaser.image} alt="" />
+          : <span class="teaser__img ph ph--dark">a recent painting</span>}
+        <span class="teaser__cap"><em class="serif">Fig. 01</em> · into the gallery →</span>
+      </a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .home {
+    min-height: calc(100svh - 85px);
+    display: flex; flex-direction: column; justify-content: center;
+    padding-top: 72px; padding-bottom: 96px;
+  }
+  .name-box { container-type: inline-size; }
+  .name {
+    margin: 0;
+    text-transform: uppercase; line-height: .86; letter-spacing: -.02em;
+    white-space: nowrap;
+    /* CHOUDHURY fills the width without clipping */
+    font-size: calc(100cqi / 9.4);
+  }
+  .name__mask { display: block; overflow: hidden; padding-bottom: .04em; }
+  .name__line { display: block; animation: scRise 1.1s cubic-bezier(.2, .8, .2, 1) both; }
+  .name__line--2 { animation-delay: .12s; }
+
+  .lower {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) minmax(0, 5fr) 150px;
+    gap: var(--gap);
+    margin-top: 64px;
+    align-items: end;
+    animation: scFade .9s .55s ease both;
+  }
+  .intro {
+    margin: 0;
+    max-width: 30ch;
+    font-size: 30px; line-height: 1.2; color: var(--body2);
+    text-wrap: pretty;
+  }
+  .cta { display: flex; flex-direction: column; gap: 22px; }
+  .now {
+    margin: 0;
+    display: flex; align-items: center; gap: 10px;
+    font-size: 15px; color: var(--muted);
+  }
+  .now em { font-style: normal; color: var(--ink); font-weight: 500; }
+  .now__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--wine); flex: none; }
+  .cta__btns { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 28px; }
+  .text-link {
+    display: inline-flex; align-items: center; min-height: 48px;
+    font-size: 15px; font-weight: 500; color: var(--ink);
+    text-decoration: underline; text-decoration-color: var(--sage);
+    text-underline-offset: 6px; text-decoration-thickness: 1.5px;
+    transition: color .25s;
+  }
+  .text-link:hover { color: var(--wine); }
+
+  .teaser {
+    justify-self: end;
+    width: 150px;
+    color: var(--ink);
+    transform: rotate(3deg);
+    transition: transform .5s cubic-bezier(.2, .8, .2, 1);
+  }
+  .teaser:hover { transform: rotate(0deg) translateY(-6px) scale(1.03); color: var(--ink); }
+  .teaser__img {
+    display: flex;
+    aspect-ratio: 4 / 5; width: 100%; object-fit: cover;
+    padding: 10px; font-size: 11px;
+    box-shadow: 0 14px 30px rgba(30, 20, 10, .18);
+  }
+  img.teaser__img { padding: 0; }
+  .teaser__cap { display: block; margin-top: 10px; font-size: 13px; color: var(--muted); }
+  .teaser__cap em { font-size: 16px; color: var(--ink); }
+
+  @media (max-width: 759px) {
+    .home { padding-top: 48px; padding-bottom: 72px; min-height: calc(100svh - 85px); }
+    .lower { grid-template-columns: 1fr; gap: var(--gap); margin-top: 40px; }
+    .intro { font-size: 22px; }
+    .teaser { width: 110px; }
+  }
+</style>

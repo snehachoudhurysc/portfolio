@@ -1,0 +1,76 @@
+---
+import Base from '../../layouts/Base.astro';
+import { work } from '../../data/work';
+
+export function getStaticPaths() {
+  return work.map((c) => ({ params: { slug: c.slug }, props: { c } }));
+}
+
+const { c } = Astro.props;
+const parts = [
+  { h: 'The challenge', t: c.challenge },
+  { h: 'What I did', t: c.approach },
+  { h: 'The result', t: c.result },
+];
+---
+
+<Base title={c.title} description={`${c.kind}: ${c.result}`}>
+  <div class="bar wrap">
+    <a href="/experience/">← Back to work</a>
+    <span>{c.kind}</span>
+  </div>
+  <article class="wrap case">
+    <h1 class="sec-title">{c.title}</h1>
+    <p class="result serif">{c.result}</p>
+    {c.image
+      ? <img class="hero" src={c.image} alt="" />
+      : <div class="hero ph">{c.placeholder}</div>}
+    <div class="parts">
+      {parts.map((p) => (
+        <div class="part" data-reveal="up">
+          <p class="eyebrow">{p.h}</p>
+          <p class="part__t">{p.t}</p>
+        </div>
+      ))}
+    </div>
+  </article>
+</Base>
+
+<style>
+  .bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 12px; padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .bar a {
+    display: inline-flex; align-items: center; min-height: 44px;
+    font-size: 15px; font-weight: 500; color: var(--ink);
+  }
+  .bar a:hover { color: var(--wine); }
+  .bar span {
+    font-size: 13px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--muted);
+  }
+  .case { padding-top: var(--sec-top); max-width: 1312px; margin: 0 auto; }
+  .result {
+    margin: 20px 0 0;
+    font-size: 40px; line-height: 1.15; color: var(--wine); max-width: 820px;
+  }
+  .hero {
+    margin-top: var(--gap-l);
+    width: 100%; aspect-ratio: 16 / 9; object-fit: cover;
+    border-radius: 6px; padding: 18px;
+  }
+  img.hero { padding: 0; }
+  .parts {
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap-l); margin-top: var(--gap-l);
+  }
+  .part { border-top: 1px solid var(--sage); padding-top: 18px; }
+  .part .eyebrow { margin-bottom: 12px; }
+  .part__t { margin: 0; font-size: 17px; line-height: 1.6; }
+
+  @media (max-width: 759px) {
+    .result { font-size: 28px; }
+    .parts { grid-template-columns: 1fr; }
+  }
+</style>
