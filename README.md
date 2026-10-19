@@ -13,7 +13,7 @@ npm run dev      # then open http://localhost:4321
 
 | What | File |
 |---|---|
-| Intro line, email, LinkedIn, CV, portrait, signature, artist statement | `src/data/site.ts` |
+| Intro line, email, LinkedIn, CV, artist statement | `src/data/site.ts` |
 | Stats, timeline, leadership, certifications | `src/data/experience.ts` |
 | Selected work / case studies | `src/data/work.ts` |
 | Paintings & sketches | `src/data/art.ts` |
@@ -28,9 +28,8 @@ npm run dev      # then open http://localhost:4321
    ];
    ```
 
-### Photos, signature and CV
-- Portrait: `public/portrait.jpg` → set `portrait: '/portrait.jpg'` in `site.ts`.
-- Signature: `public/signature.svg` → set `signature: '/signature.svg'`.
+### Photos and CV
+- About-page photos: `public/photos/` (set in `src/pages/about.astro`).
 - CV: `public/Sneha_Choudhury_CV.pdf` (a version **without** your phone number).
 
 ## Deploy

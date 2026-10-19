@@ -75,12 +75,7 @@ const isActive = (href: string) =>
     </main>
 
     <footer class="footer wrap">
-      <div class="footer__left">
-        {site.signature
-          ? <img class="footer__sig" src={site.signature} alt="" />
-          : <div class="footer__sig footer__sig--ph">signature</div>}
-        <a class="footer__email serif" href={`mailto:${site.email}`}>{site.email}</a>
-      </div>
+      <a class="footer__email serif" href={`mailto:${site.email}`}>{site.email}</a>
       <a class="footer__li" href={site.linkedin} target="_blank" rel="noopener">LinkedIn ↗</a>
     </footer>
 
@@ -199,14 +194,8 @@ const isActive = (href: string) =>
     display: flex; flex-wrap: wrap; gap: 20px 40px;
     justify-content: space-between; align-items: center;
   }
-  .footer__left { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
-  .footer__sig { width: 120px; height: 44px; object-fit: contain; object-position: left; }
-  .footer__sig--ph {
-    border-bottom: 1px solid var(--fg);
-    display: flex; align-items: center; justify-content: center;
-    font-family: ui-monospace, Menlo, monospace; font-size: 10px; color: var(--sub);
-  }
   .footer__email {
+    min-width: 0;
     font-size: 34px; color: var(--fg); overflow-wrap: anywhere;
     transition: color .25s;
   }

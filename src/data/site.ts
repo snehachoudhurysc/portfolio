@@ -16,11 +16,9 @@ export const site = {
   // About-page photos are set in src/pages/about.astro (files live in /public/photos).
   // Image shown when the site is shared on LinkedIn, iMessage, etc.
   shareImage: '/photos/og.jpg',
-  // Drop a file into /public and set the path. Leave as null to show a placeholder.
-  signature: null as string | null, // e.g. '/signature.svg'
 
   artistStatement:
-    '[Artist statement: one or two sentences about what you paint, sketch, and why.]',
+    'Canvas, vinyl, pumpkins: if it holds still long enough, I’ll paint it. My work moves between calm landscapes and seasonal one-offs, mostly in acrylic and watercolour.',
 };
 
 export const nav = [

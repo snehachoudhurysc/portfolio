@@ -68,10 +68,7 @@ const hobbies = [
                     </div>
                   ))}
                 </dl>
-                <div class="sign-row">
-                  {site.signature
-                    ? <img class="sig" src={site.signature} alt="" />
-                    : <div class="sig sig--ph">signature (SVG)</div>}
+                <div class="cv-row">
                   <a class="btn" href={site.cv} download>Download CV ↓</a>
                 </div>
               </>
@@ -168,14 +165,7 @@ const hobbies = [
     color: var(--muted);
   }
   .skills dd { margin: 6px 0 0; font-size: 15px; line-height: 1.6; }
-  .sign-row { margin-top: 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 24px; }
-  .sig { width: 200px; height: 72px; object-fit: contain; object-position: left; }
-  .sig--ph {
-    border-bottom: 1px solid var(--ink);
-    background-image: repeating-linear-gradient(135deg, rgba(30, 30, 30, .07) 0 1px, transparent 1px 9px);
-    display: flex; align-items: center; justify-content: center;
-    font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: var(--muted);
-  }
+  .cv-row { margin-top: 40px; }
 
   .outside { margin-top: var(--sec-gap); }
   .cards { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--gap-s); }
